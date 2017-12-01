@@ -1,20 +1,15 @@
-declare var require: any;
-
-import 'expose-loader?$!expose-loader?jQuery!jquery';
+import 'jquery';
 import 'fullcalendar';
 import 'bootstrap';
-import 'web3';
+import Web3 from 'web3';
 import '../less/styles.less';
+import truffleContract from 'truffle-contract';
 
-var truffleContract = require('truffle-contract');
-var organisation = require('../../build/contracts/Organization.json');
-
-declare var $: any;
-declare var Web3: any;
+var organisation = require("../../build/contracts/Organization.json");
 
 $(function () {
     var web3Provider: any,
-        web3: any,
+        web3: Web3,
         OrganisationContract: any,
         contract: any;
 

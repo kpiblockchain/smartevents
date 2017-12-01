@@ -10,6 +10,10 @@
   "author": "Jerzy Kołosowski",
   "license": "ISC",
   "devDependencies": {
+    "@types/bootstrap": "^3.3.36",
+    "@types/fullcalendar": "^3.5.1",
+    "@types/jquery": "^3.2.16",
+    "@types/webpack": "^3.8.1",
     "copy-webpack-plugin": "^4.2.3",
     "css-loader": "^0.28.7",
     "eslint": "^4.12.1",
