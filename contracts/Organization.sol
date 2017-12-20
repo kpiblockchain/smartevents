@@ -1,17 +1,25 @@
 pragma solidity ^0.4.18;
 
-import './Event.sol';
+import "zeppelin-solidity/contracts/token/BasicToken.sol";
+import "./Event.sol";
 
-contract Organization {
+
+contract Organization is BasicToken {
+    using SafeMath for uint256;
+
     address public owner;
     string public name;
 
-    mapping (address => uint) balances;
-
     Event[] public events;
 
-    modifier onlyByOwnEvent() {
-        require(isEventAddress(msg.sender));
+    modifier onlyByOwner() {
+        require(owner == msg.sender);
+
+        _;
+    }
+
+    modifier onlyByOwnerOrEvent() {
+        require(owner == msg.sender || isEventAddress(msg.sender));
 
         _;
     }
@@ -21,26 +29,34 @@ contract Organization {
         name = _name;
     }
 
-    function isEventAddress(address addr) internal view
-        returns (bool) 
+    function createEvent(string _name, uint _registrationOpenFrom, uint _registrationOpenTo, uint16 _maxAttendants, uint256 _amountForPresence) external onlyByOwner
+    returns (Event eventAddress)
     {
-        for (uint i = 0; i < events.length; i++) {
-            if (events[i] == addr)
-                return true;
-        }
-
-        return false;
-    }
-
-    function createEvent(string _name, string _date, uint16 _maxAttendants, uint8 _tokensForPresence) external
-        returns (Event eventAddress) 
-    {
-        var e = new Event(_name, _date, _maxAttendants, _tokensForPresence);
+        var e = new Event(_name, _registrationOpenFrom, _registrationOpenTo, _maxAttendants, _amountForPresence);
         events.push(e);
         return e;
     }
 
-    function giveToken(address user, uint8 tokens) onlyByOwnEvent public {
-        balances[user] += tokens;
+    function getEventsCount() public view
+    returns (uint256)
+    {
+        return events.length;
+    }
+
+    function giveToken(address _to, uint256 _amount) public onlyByOwnerOrEvent {
+        totalSupply = totalSupply.add(_amount);
+        balances[_to] = balances[_to].add(_amount);
+        Transfer(address(0), _to, _amount);
+    }
+
+    function isEventAddress(address _address) internal view
+        returns (bool)
+    {
+        for (uint i = events.length - 1; i >= 0; i--) {
+            if (events[i] == _address)
+                return true;
+        }
+
+        return false;
     }
 }

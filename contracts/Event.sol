@@ -2,50 +2,76 @@ pragma solidity ^0.4.18;
 
 import "./Organization.sol";
 
+
 contract Event {
     enum SignUpResult { OK, EventFull, AlreadySingUp }
 
     string public name;
-    string public date;
+    uint public registrationOpenFrom;
+    uint public registrationOpenTo;
 
-    uint16 currentSignedUpAttendants;
-    uint16 maxAttendants;
-    uint8 tokensForPresence;
-    Organization organization;
-    
+    uint16 public currentSignedUpAttendants;
+    uint16 public maxAttendants;
+    uint256 public tokensForPresence;
+    Organization public organization;
+
     struct AttendantInfo {
         bool isSignedUp;
         bool wasPresent;
     }
 
     mapping (address=>AttendantInfo) attendantsPresence;
-    
-    function Event(string _name, string _date, uint16 _maxAttendants, uint8 _tokensForPresence) public {
+
+    function Event(string _name, uint _registrationOpenFrom, uint _registrationOpenTo, uint16 _maxAttendants, uint256 _amount) public {
         name = _name;
-        date = _date;
+        registrationOpenFrom = _registrationOpenFrom;
+        registrationOpenTo = _registrationOpenTo;
         maxAttendants = _maxAttendants;
-        tokensForPresence = _tokensForPresence;
+        tokensForPresence = _amount;
         organization = Organization(msg.sender);
     }
 
     modifier organizationOwnerOnly() {
         require(msg.sender == organization.owner());
+
         _;
     }
 
-    function signUp() external 
-        returns (SignUpResult)
-    {       
-        return signUpInternal(msg.sender);
-    }  
+    modifier registrationIsOpen() {
+        require(now >= registrationOpenFrom);
+        require(now <= registrationOpenTo);
 
-    function signUp(address attendant) organizationOwnerOnly external 
-        returns (SignUpResult)
-    {       
-        return signUpInternal(attendant);
-    }  
+        _;
+    }
 
-    function signUpInternal(address attendant) private
+    function signUpByAttendant() external
+        returns (SignUpResult)
+    {
+        return signUp(msg.sender);
+    }
+
+    function signUpByOwner(address attendant) external organizationOwnerOnly
+        returns (SignUpResult)
+    {
+        return signUp(attendant);
+    }
+
+    function confirmPresence(address attendant) external organizationOwnerOnly {
+        require(attendantsPresence[attendant].isSignedUp == true);
+        require(attendantsPresence[attendant].wasPresent == false);
+
+        attendantsPresence[attendant].wasPresent = true;
+
+        organization.giveToken(attendant, tokensForPresence);
+    }
+
+    function isSignedUp(address attendant) public view
+        returns (bool)
+    {
+        return attendantsPresence[attendant].isSignedUp;
+    }
+
+    function signUp(address attendant) private
         returns (SignUpResult)
     {
         if (currentSignedUpAttendants > maxAttendants)
@@ -56,16 +82,7 @@ contract Event {
 
         attendantsPresence[attendant].isSignedUp = true;
         currentSignedUpAttendants++;
-                
+
         return SignUpResult.OK;
-    }
-
-    function confirmPresence(address attendant) organizationOwnerOnly external {
-        require(attendantsPresence[attendant].isSignedUp == true);
-        require(attendantsPresence[attendant].wasPresent == false);
-        
-        attendantsPresence[attendant].wasPresent = true;
-
-        organization.giveToken(attendant, tokensForPresence);
     }
 }
