@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {OrganizationService} from '../organization.service';
 
 @Component({
   selector: 'app-create-event',
@@ -6,10 +7,18 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./create-event.component.css']
 })
 export class CreateEventComponent implements OnInit {
+  name: string;
+  registrationOpenFrom: Date;
+  registrationOpenTo: Date;
+  maxAttendants: number;
+  tokensForPresence: number;
 
-  constructor() { }
+  constructor(private organizationService: OrganizationService) { }
 
   ngOnInit() {
   }
 
+  async onSave(): Promise<void> {
+    await this.organizationService.createEvent(this.name, this.registrationOpenFrom, this.registrationOpenTo, this.maxAttendants, this.tokensForPresence);
+  }
 }

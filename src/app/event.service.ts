@@ -6,6 +6,7 @@ import { OrganizationService } from './organization.service';
 import { BigNumber } from 'bignumber.js';
 import { Event } from '../contracts';
 import { Event4ListVM } from './event4list-vm';
+import {W3} from 'soltsice';
 
 @Injectable()
 export class EventService {

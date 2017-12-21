@@ -1,3 +1,23 @@
-<p>
-  create-event works!
-</p>
+<div class="create-event-container">
+  <mat-form-field>
+    <input matInput [(ngModel)]="name" placeholder="Name">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="registrationOpenFrom" placeholder="Registration open from">
+    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
+    <mat-datepicker #fromPicker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput [matDatepicker]="toPicker" [(ngModel)]="registrationOpenTo" placeholder="Registration open to">
+    <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
+    <mat-datepicker #toPicker></mat-datepicker>
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" [(ngModel)]="maxAttendants" placeholder="Maximum attendants">
+  </mat-form-field>
+  <mat-form-field>
+    <input matInput type="number" [(ngModel)]="tokensForPresence" placeholder="Tokens for presence">
+    <span matSuffix>MEETUP</span>
+  </mat-form-field>
+  <button mat-button (click)="onSave()">Save</button>
+</div>

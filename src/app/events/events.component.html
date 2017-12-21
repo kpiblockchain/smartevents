@@ -1,14 +1,14 @@
 <mat-card *ngFor="let event of events">
   <mat-card-header>
     <mat-card-title>{{event.name}}</mat-card-title>
-    <mat-card-subtitle>{{event.registrationOpenFrom}} - {{event.registrationOpenTo}} ({{event.numOfAttendants}})</mat-card-subtitle>
+    <mat-card-subtitle>{{event.registrationOpenFrom | date : short}} - {{event.registrationOpenTo | date : short}} ({{event.numOfAttendants}})</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>
     Bla bla bla
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button (click)="signUp(event)" *ngIf="!event.alreadySignedUp">Sign Up</button>
-    <button mat-button (click)="confirm(event)" *ngIf="event.alreadySignedUp">Confirm Presence</button>
+    <button mat-button (click)="signUp(event)" [disabled]="event.alreadySignedUp">{{event.alreadySignedUp ? 'Already Signed Up' :'Sign Up'}}</button>
+    <button mat-button (click)="confirm(event)" *ngIf="currentAccountIsOrganizationOwner">Confirm Attendant Presence</button>
   </mat-card-actions>
 </mat-card>
 
