@@ -198,6 +198,17 @@ export class Event extends SoltsiceContract {
         });
     }
     
+    // tslint:disable-next-line:max-line-length
+    // tslint:disable-next-line:variable-name
+    public attendantsCount( txParams?: W3.TC.TxParams): Promise<BigNumber> {
+        return new Promise((resolve, reject) => {
+            this._instance.attendantsCount
+                .call( txParams || this._sendParams)
+                .then((res) => resolve(res))
+                .catch((err) => reject(err));
+        });
+    }
+    
     // tslint:disable-next-line:member-ordering
     public confirmPresence = Object.assign(
         // tslint:disable-next-line:max-line-length
@@ -238,17 +249,6 @@ export class Event extends SoltsiceContract {
                 });
             }
         });
-    
-    // tslint:disable-next-line:max-line-length
-    // tslint:disable-next-line:variable-name
-    public currentSignedUpAttendants( txParams?: W3.TC.TxParams): Promise<BigNumber> {
-        return new Promise((resolve, reject) => {
-            this._instance.currentSignedUpAttendants
-                .call( txParams || this._sendParams)
-                .then((res) => resolve(res))
-                .catch((err) => reject(err));
-        });
-    }
     
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name

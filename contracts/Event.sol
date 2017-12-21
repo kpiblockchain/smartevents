@@ -2,27 +2,28 @@ pragma solidity ^0.4.18;
 
 import "./Organization.sol";
 
-
 contract Event {
-    enum SignUpResult { OK, EventFull, AlreadySingUp }
+    enum SignUpResult { OK, EventFull, AlreadySignedUp }
 
-    string public name;
-    uint public registrationOpenFrom;
-    uint public registrationOpenTo;
+    string public name; // można wyciągnąć poza blockchain
+    uint256 public registrationOpenFrom;
+    uint256 public registrationOpenTo;
 
-    uint16 public currentSignedUpAttendants;
+    uint16 public attendantsCount;
     uint16 public maxAttendants;
     uint256 public tokensForPresence;
     Organization public organization;
 
+    mapping(address => uint16) attendantIds; // also acts as isSignedUp when value is >0
+    mapping(uint16 => AttendantInfo) attendants;
+
     struct AttendantInfo {
-        bool isSignedUp;
-        bool wasPresent;
+        string nick; // opcjonalne, można poza blockchain'em
+        address account;
+        bool gotToken;
     }
 
-    mapping (address=>AttendantInfo) attendantsPresence;
-
-    function Event(string _name, uint _registrationOpenFrom, uint _registrationOpenTo, uint16 _maxAttendants, uint256 _amount) public {
+    function Event(string _name, uint256 _registrationOpenFrom, uint256 _registrationOpenTo, uint16 _maxAttendants, uint256 _amount) public {
         name = _name;
         registrationOpenFrom = _registrationOpenFrom;
         registrationOpenTo = _registrationOpenTo;
@@ -33,18 +34,16 @@ contract Event {
 
     modifier organizationOwnerOnly() {
         require(msg.sender == organization.owner());
-
         _;
     }
 
     modifier registrationIsOpen() {
         require(now >= registrationOpenFrom);
         require(now <= registrationOpenTo);
-
         _;
     }
 
-    function signUpByAttendant() external
+    function signUpByAttendant() external registrationIsOpen
         returns (SignUpResult)
     {
         return signUp(msg.sender);
@@ -57,32 +56,30 @@ contract Event {
     }
 
     function confirmPresence(address attendant) external organizationOwnerOnly {
-        require(attendantsPresence[attendant].isSignedUp == true);
-        require(attendantsPresence[attendant].wasPresent == false);
+        require(isSignedUp(attendant));
+        require(attendants[attendantIds[attendant]].gotToken == false);
 
-        attendantsPresence[attendant].wasPresent = true;
-
+        attendants[attendantIds[attendant]].gotToken = true;
         organization.giveToken(attendant, tokensForPresence);
     }
 
     function isSignedUp(address attendant) public view
         returns (bool)
     {
-        return attendantsPresence[attendant].isSignedUp;
+        return attendantIds[attendant] != 0;
     }
 
     function signUp(address attendant) private
         returns (SignUpResult)
     {
-        if (currentSignedUpAttendants > maxAttendants)
+        if (isSignedUp(attendant))
+            return SignUpResult.AlreadySignedUp;
+
+        if (attendantsCount >= maxAttendants)
             return SignUpResult.EventFull;
-
-        if (attendantsPresence[attendant].isSignedUp)
-            return SignUpResult.AlreadySingUp;
-
-        attendantsPresence[attendant].isSignedUp = true;
-        currentSignedUpAttendants++;
-
+            
+        attendantsCount++;
+        attendantIds[attendant] = attendantsCount;
         return SignUpResult.OK;
     }
 }
