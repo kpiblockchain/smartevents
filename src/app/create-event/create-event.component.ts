@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {OrganizationService} from '../organization.service';
+import {Moment} from 'moment';
 
 @Component({
   selector: 'app-create-event',
@@ -8,8 +9,8 @@ import {OrganizationService} from '../organization.service';
 })
 export class CreateEventComponent implements OnInit {
   name: string;
-  registrationOpenFrom: Date;
-  registrationOpenTo: Date;
+  registrationOpenFrom: Moment;
+  registrationOpenTo: Moment;
   maxAttendants: number;
   tokensForPresence: number;
 

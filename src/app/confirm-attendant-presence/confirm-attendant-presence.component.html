@@ -1,3 +1,34 @@
-<p>
-  confirm-attendant-presence works!
-</p>
+<h1 mat-dialog-title>Confirm presence on {{data.eventName}}</h1>
+<div mat-dialog-content>
+  <mat-table #table [dataSource]="dataSource">
+    <ng-container matColumnDef="select">
+      <mat-header-cell *matHeaderCellDef>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let row">
+        <mat-checkbox [disabled]="row.gotToken"
+                      (click)="$event.stopPropagation()"
+                      (change)="$event && !row.gotToken ? selection.toggle(row) : null"
+                      [checked]="row.gotToken || selection.isSelected(row)">
+        </mat-checkbox>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="nick">
+      <mat-header-cell *matHeaderCellDef> Nick </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.nick}} </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="address">
+      <mat-header-cell *matHeaderCellDef> Address </mat-header-cell>
+      <mat-cell *matCellDef="let element"> {{element.address}} </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+             (click)="!row.gotToken && selection.toggle(row)">
+    </mat-row>
+  </mat-table>
+</div>
+<div mat-dialog-actions>
+  <button mat-button [mat-dialog-close]="selection" cdkFocusInitial>Ok</button>
+</div>

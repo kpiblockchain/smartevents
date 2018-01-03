@@ -20,6 +20,9 @@ import { ConfirmAttendantPresenceComponent } from './confirm-attendant-presence/
     CreateEventComponent,
     ConfirmAttendantPresenceComponent
   ],
+  entryComponents: [
+    ConfirmAttendantPresenceComponent
+  ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,

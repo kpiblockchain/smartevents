@@ -1,24 +1,50 @@
 import { Event } from '../contracts';
-import {W3} from 'soltsice';
+import { W3 } from 'soltsice';
+import { Moment } from 'moment';
+import * as moment from 'moment';
+import {AttendantVm} from './attendant-vm';
+import {BigNumber} from 'bignumber.js';
 
 export class Event4ListVM {
   address: string;
   name: string;
   numOfAttendants: number;
-  registrationOpenFrom: Date;
-  registrationOpenTo: Date;
+  registrationOpenFrom: Moment;
+  registrationOpenTo: Moment;
   alreadySignedUp: boolean;
+  gotToken: boolean;
+  tokensForPresence: number;
+  get registrationIsOpen(): boolean {
+    return moment().isBetween(this.registrationOpenFrom, this.registrationOpenTo);
+  }
 
   constructor(private event: Event, private me: string) {
     this.address = event.address;
     event.name().then(n => this.name = n);
     event.attendantsCount().then(x => this.numOfAttendants = x.toNumber());
-    event.registrationOpenFrom().then(x => this.registrationOpenFrom = new Date(x.toNumber()));
-    event.registrationOpenTo().then(x => this.registrationOpenTo = new Date(x.toNumber()));
+    event.registrationOpenFrom().then(x => this.registrationOpenFrom = moment.unix(x.toNumber()));
+    event.registrationOpenTo().then(x => this.registrationOpenTo = moment.unix(x.toNumber()));
+    event.tokensForPresence().then(x => this.tokensForPresence = x.toNumber());
     event.isSignedUp(this.me).then(x => this.alreadySignedUp = x);
+    event.gotToken(this.me).then(x => this.gotToken = x);
   }
 
   async signUp(): Promise<void> {
-    await this.event.signUpByAttendant(W3.TC.txParamsDefaultSend(this.me));
+    await this.event.signUpByAttendant(prompt(`Nick?`), W3.TC.txParamsDefaultSend(this.me));
+  }
+
+  async *getAttendants(): AsyncIterable<AttendantVm> {
+    const attendantsCount = await this.event.attendantsCount();
+
+    for (let i = new BigNumber(0); i.lt(attendantsCount); i = i.add(1)) {
+      const attendantAddress = await this.event.attendantsAddresses(i);
+      const attendant = await this.event.attendants(attendantAddress);
+      yield new AttendantVm(attendant[0], attendantAddress, attendant[2]);
+    }
+  }
+
+  async confirm(addresses: string[]) {
+    if (addresses.length)
+      await this.event.confirmPresence(addresses, W3.TC.txParamsDefaultSend(this.me));
   }
 }

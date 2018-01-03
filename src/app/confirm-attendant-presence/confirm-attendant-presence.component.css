@@ -1,0 +1,18 @@
+.mat-table {
+  overflow: auto;
+  max-height: 500px;
+}
+
+mat-cell.mat-column-select,
+mat-header-cell.mat-column-select {
+  overflow: visible;
+  min-width: 50px;
+  flex: 0;
+}
+
+mat-cell.mat-column-nick,
+mat-header-cell.mat-column-nick {
+  min-width: 200px;
+  flex: 0;
+}
+

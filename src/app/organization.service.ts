@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Web3Service } from './web3.service';
 import { Organization } from '../contracts';
 import { BigNumber } from 'bignumber.js';
+import { Moment } from 'moment';
 
 
 @Injectable()
@@ -23,9 +24,9 @@ export class OrganizationService {
     return currentAccount === owner;
   }
 
-  async createEvent(name: string, from: Date, to: Date, maxAttendants: number, tokensForPresence: BigNumber | number) {
+  async createEvent(name: string, from: Moment, to: Moment, maxAttendants: number, tokensForPresence: BigNumber | number) {
     const organization = await this.getOrganization();
     const defaultTxParams = await this.web3.getDefaultTxParams();
-    await organization.createEvent(name, from.getTime(), to.getTime(), maxAttendants, tokensForPresence, defaultTxParams);
+    await organization.createEvent(name, from.unix(), to.unix(), maxAttendants, tokensForPresence, defaultTxParams);
   }
 }
