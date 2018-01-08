@@ -29,14 +29,14 @@
 
 ### Aplikacja SmartEvent
 
-Aplikacja dostępna jest pod adresem http://kpimeetup.ml/events
+Aplikacja dostępna jest pod adresem http://kpimeetup.ml
 
 1. klikamy SignUp na wydarzeniu `KPI 12.01.2018`
 1. wpisujemy nick i potwierdzamy
 
     ![](9_meetup_signup.png)
 1. po chwili MetaMask powinien nas powiadomić o transakcji do potwierdzenia - klikamy ikonkę MetaMask jeśli samo nie pojawi się okienko
-1. zwiększamy Gas Limit o jedno dodatkowe zero (brak optymalizacji kontraktu, ale na testowej sieci nam nie przeszkadza)
+1. jeśli *Gas Limit* to 50000 to zwiększamy go o jedno dodatkowe zero (w tej chwili jest bug, że aplikacja nie wpisuje poprawnej ilości gazu do zużycia i wstawiane jest domyślne 5000. Ilość zużywanego gazu wynika z braku optymalizacji kontraktu, ale na testowej sieci nam to nie przeszkadza)
 1. klikamy `Submit`
 
     ![](10_meetup_confirm.png)
