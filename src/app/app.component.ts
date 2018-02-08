@@ -12,7 +12,7 @@ export class AppComponent {
   currentAccountIsOrganizationOwner: boolean;
 
   constructor(private organizationService: OrganizationService) {
-    this.organizationService.getOrganization().then(x => x.name()).then(x => this.title = x);
+    // this.organizationService.getOrganization().then(x => x.name()).then(x => this.title = x); // TODO pobierać z bazy
     this.organizationService.currentAccountIsOrganizationOwner().then(x => this.currentAccountIsOrganizationOwner = x);
   }
 }

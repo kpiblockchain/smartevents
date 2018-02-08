@@ -7,7 +7,6 @@ contract Organization is BasicToken {
     using SafeMath for uint256;
 
     address public owner;
-    string public name; // można wyciągnąć poza blockchain
     Event[] public events;
 
     modifier onlyByOwner() {
@@ -20,15 +19,14 @@ contract Organization is BasicToken {
         _;
     }
 
-    function Organization(string _name) public {
+    function Organization() public {
         owner = msg.sender;
-        name = _name;
     }
 
-    function createEvent(string _name, uint _registrationOpenFrom, uint _registrationOpenTo, uint16 _maxAttendants, uint256 _amountForPresence) external onlyByOwner
+    function createEvent(uint _registrationOpenTo, uint _maxAttendants, uint _amountForPresence) external onlyByOwner
     returns (Event)
     {
-        var eventAddress = new Event(_name, _registrationOpenFrom, _registrationOpenTo, _maxAttendants, _amountForPresence);
+        var eventAddress = new Event(_registrationOpenTo, _maxAttendants, _amountForPresence);
         events.push(eventAddress);
         return eventAddress;
     }

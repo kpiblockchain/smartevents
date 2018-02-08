@@ -19,7 +19,7 @@ export class Event extends SoltsiceContract {
     }
 
     // tslint:disable-next-line:max-line-length
-    static async New(deploymentParams: W3.TC.TxParams, ctorParams?: {_name: string, _registrationOpenFrom: BigNumber | number, _registrationOpenTo: BigNumber | number, _maxAttendants: BigNumber | number, _amount: BigNumber | number}, w3?: W3, link?: SoltsiceContract[]): Promise<Event> {
+    static async New(deploymentParams: W3.TC.TxParams, ctorParams?: {_registrationOpenTo: BigNumber | number, _maxAttendants: BigNumber | number, _amount: BigNumber | number}, w3?: W3, link?: SoltsiceContract[]): Promise<Event> {
         let contract = new Event(deploymentParams, ctorParams, w3, link);
         await contract._instancePromise;
         return contract;
@@ -33,7 +33,7 @@ export class Event extends SoltsiceContract {
 
     protected constructor(
         deploymentParams: string | W3.TC.TxParams | object,
-        ctorParams?: {_name: string, _registrationOpenFrom: BigNumber | number, _registrationOpenTo: BigNumber | number, _maxAttendants: BigNumber | number, _amount: BigNumber | number},
+        ctorParams?: {_registrationOpenTo: BigNumber | number, _maxAttendants: BigNumber | number, _amount: BigNumber | number},
         w3?: W3,
         link?: SoltsiceContract[]
     ) {
@@ -41,7 +41,7 @@ export class Event extends SoltsiceContract {
         super(
             w3,
             Event.Artifacts,
-            ctorParams ? [ctorParams!._name, ctorParams!._registrationOpenFrom, ctorParams!._registrationOpenTo, ctorParams!._maxAttendants, ctorParams!._amount] : [],
+            ctorParams ? [ctorParams!._registrationOpenTo, ctorParams!._maxAttendants, ctorParams!._amount] : [],
             deploymentParams,
             link
         );
@@ -49,17 +49,6 @@ export class Event extends SoltsiceContract {
     /*
         Contract methods
     */
-    
-    // tslint:disable-next-line:max-line-length
-    // tslint:disable-next-line:variable-name
-    public name( txParams?: W3.TC.TxParams): Promise<string> {
-        return new Promise((resolve, reject) => {
-            this._instance.name
-                .call( txParams || this._sendParams)
-                .then((res) => resolve(res))
-                .catch((err) => reject(err));
-        });
-    }
     
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name
@@ -82,6 +71,47 @@ export class Event extends SoltsiceContract {
                 .catch((err) => reject(err));
         });
     }
+    
+    // tslint:disable-next-line:member-ordering
+    public signUpByAttendant = Object.assign(
+        // tslint:disable-next-line:max-line-length
+        // tslint:disable-next-line:variable-name
+        ( txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
+            return new Promise((resolve, reject) => {
+                this._instance.signUpByAttendant( txParams || this._sendParams)
+                    .then((res) => resolve(res))
+                    .catch((err) => reject(err));
+            });
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            sendTransaction: ( txParams?: W3.TC.TxParams): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.signUpByAttendant.sendTransaction( txParams || this._sendParams)
+                        .then((res) => resolve(res))
+                        .catch((err) => reject(err));
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            data: (): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    resolve(this._instance.signUpByAttendant.request().params[0].data);
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            estimateGas: (): Promise<number> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.signUpByAttendant.estimateGas().then((g) => resolve(g));
+                });
+            }
+        });
     
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name
@@ -150,9 +180,9 @@ export class Event extends SoltsiceContract {
     public signUpByOwner = Object.assign(
         // tslint:disable-next-line:max-line-length
         // tslint:disable-next-line:variable-name
-        (nick: string, attendant: string, txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
+        (attendant: string, txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
             return new Promise((resolve, reject) => {
-                this._instance.signUpByOwner(nick, attendant, txParams || this._sendParams)
+                this._instance.signUpByOwner(attendant, txParams || this._sendParams)
                     .then((res) => resolve(res))
                     .catch((err) => reject(err));
             });
@@ -160,9 +190,9 @@ export class Event extends SoltsiceContract {
         {
             // tslint:disable-next-line:max-line-length
             // tslint:disable-next-line:variable-name
-            sendTransaction: (nick: string, attendant: string, txParams?: W3.TC.TxParams): Promise<string> => {
+            sendTransaction: (attendant: string, txParams?: W3.TC.TxParams): Promise<string> => {
                 return new Promise((resolve, reject) => {
-                    this._instance.signUpByOwner.sendTransaction(nick, attendant, txParams || this._sendParams)
+                    this._instance.signUpByOwner.sendTransaction(attendant, txParams || this._sendParams)
                         .then((res) => resolve(res))
                         .catch((err) => reject(err));
                 });
@@ -171,32 +201,21 @@ export class Event extends SoltsiceContract {
         {
             // tslint:disable-next-line:max-line-length
             // tslint:disable-next-line:variable-name
-            data: (nick: string, attendant: string): Promise<string> => {
+            data: (attendant: string): Promise<string> => {
                 return new Promise((resolve, reject) => {
-                    resolve(this._instance.signUpByOwner.request(nick, attendant).params[0].data);
+                    resolve(this._instance.signUpByOwner.request(attendant).params[0].data);
                 });
             }
         },
         {
             // tslint:disable-next-line:max-line-length
             // tslint:disable-next-line:variable-name
-            estimateGas: (nick: string, attendant: string): Promise<number> => {
+            estimateGas: (attendant: string): Promise<number> => {
                 return new Promise((resolve, reject) => {
-                    this._instance.signUpByOwner.estimateGas(nick, attendant).then((g) => resolve(g));
+                    this._instance.signUpByOwner.estimateGas(attendant).then((g) => resolve(g));
                 });
             }
         });
-    
-    // tslint:disable-next-line:max-line-length
-    // tslint:disable-next-line:variable-name
-    public registrationOpenFrom( txParams?: W3.TC.TxParams): Promise<BigNumber> {
-        return new Promise((resolve, reject) => {
-            this._instance.registrationOpenFrom
-                .call( txParams || this._sendParams)
-                .then((res) => resolve(res))
-                .catch((err) => reject(err));
-        });
-    }
     
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name
@@ -219,47 +238,6 @@ export class Event extends SoltsiceContract {
                 .catch((err) => reject(err));
         });
     }
-    
-    // tslint:disable-next-line:member-ordering
-    public signUpByAttendant = Object.assign(
-        // tslint:disable-next-line:max-line-length
-        // tslint:disable-next-line:variable-name
-        (nick: string, txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
-            return new Promise((resolve, reject) => {
-                this._instance.signUpByAttendant(nick, txParams || this._sendParams)
-                    .then((res) => resolve(res))
-                    .catch((err) => reject(err));
-            });
-        },
-        {
-            // tslint:disable-next-line:max-line-length
-            // tslint:disable-next-line:variable-name
-            sendTransaction: (nick: string, txParams?: W3.TC.TxParams): Promise<string> => {
-                return new Promise((resolve, reject) => {
-                    this._instance.signUpByAttendant.sendTransaction(nick, txParams || this._sendParams)
-                        .then((res) => resolve(res))
-                        .catch((err) => reject(err));
-                });
-            }
-        },
-        {
-            // tslint:disable-next-line:max-line-length
-            // tslint:disable-next-line:variable-name
-            data: (nick: string): Promise<string> => {
-                return new Promise((resolve, reject) => {
-                    resolve(this._instance.signUpByAttendant.request(nick).params[0].data);
-                });
-            }
-        },
-        {
-            // tslint:disable-next-line:max-line-length
-            // tslint:disable-next-line:variable-name
-            estimateGas: (nick: string): Promise<number> => {
-                return new Promise((resolve, reject) => {
-                    this._instance.signUpByAttendant.estimateGas(nick).then((g) => resolve(g));
-                });
-            }
-        });
     
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name

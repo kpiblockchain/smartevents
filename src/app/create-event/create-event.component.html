@@ -3,11 +3,6 @@
     <input matInput [(ngModel)]="name" placeholder="Name">
   </mat-form-field>
   <mat-form-field>
-    <input matInput [matDatepicker]="fromPicker" [(ngModel)]="registrationOpenFrom" placeholder="Registration open from">
-    <mat-datepicker-toggle matSuffix [for]="fromPicker"></mat-datepicker-toggle>
-    <mat-datepicker #fromPicker></mat-datepicker>
-  </mat-form-field>
-  <mat-form-field>
     <input matInput [matDatepicker]="toPicker" [(ngModel)]="registrationOpenTo" placeholder="Registration open to">
     <mat-datepicker-toggle matSuffix [for]="toPicker"></mat-datepicker-toggle>
     <mat-datepicker #toPicker></mat-datepicker>

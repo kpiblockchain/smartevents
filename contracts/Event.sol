@@ -2,28 +2,22 @@ pragma solidity ^0.4.18;
 
 import "./Organization.sol";
 
-
 contract Event {
-    string public name; // można wyciągnąć poza blockchain
-    uint public registrationOpenFrom;
     uint public registrationOpenTo;
 
-    uint16 public maxAttendants;
-    uint256 public tokensForPresence;
+    uint public maxAttendants; // TODO: zrobić counter odliczający do zera i wtedy pozbywamy się też {address[] public attendantsAddresses}
+    uint public tokensForPresence;
     Organization public organization;
 
     address[] public attendantsAddresses; // also acts as isSignedUp when value is >0
     mapping(address => AttendantInfo) public attendants;
 
     struct AttendantInfo {
-        string nick; // opcjonalne, można poza blockchain'em
         bool isSignedUp;
         bool gotToken;
     }
 
-    function Event(string _name, uint _registrationOpenFrom, uint _registrationOpenTo, uint16 _maxAttendants, uint256 _amount) public {
-        name = _name;
-        registrationOpenFrom = _registrationOpenFrom;
+    function Event(uint _registrationOpenTo, uint _maxAttendants, uint _amount) public {
         registrationOpenTo = _registrationOpenTo;
         maxAttendants = _maxAttendants;
         tokensForPresence = _amount;
@@ -36,19 +30,16 @@ contract Event {
     }
 
     modifier registrationIsOpen() {
-        require(now >= registrationOpenFrom);
         require(now <= registrationOpenTo);
         _;
     }
 
-    function signUpByAttendant(string nick) external registrationIsOpen
-    {
-        signUp(nick, msg.sender);
+    function signUpByAttendant() external registrationIsOpen {
+        signUp(msg.sender);
     }
 
-    function signUpByOwner(string nick, address attendant) external organizationOwnerOnly
-    {
-        signUp(nick, attendant);
+    function signUpByOwner(address attendant) external organizationOwnerOnly {
+        signUp(attendant);
     }
 
     function confirmPresence(address[] attendantsToConfirm) external organizationOwnerOnly {
@@ -80,12 +71,11 @@ contract Event {
         return attendants[attendant].gotToken;
     }
 
-    function signUp(string nick, address attendant) private
-    {
+    function signUp(address attendant) private {
         require(!isSignedUp(attendant));
         require(attendantsAddresses.length < maxAttendants);
 
         attendantsAddresses.push(attendant);
-        attendants[attendant] = AttendantInfo(nick, true, false);
+        attendants[attendant] = AttendantInfo(true, false);
     }
 }

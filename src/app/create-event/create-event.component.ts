@@ -9,7 +9,6 @@ import {Moment} from 'moment';
 })
 export class CreateEventComponent implements OnInit {
   name: string;
-  registrationOpenFrom: Moment;
   registrationOpenTo: Moment;
   maxAttendants: number;
   tokensForPresence: number;
@@ -20,6 +19,6 @@ export class CreateEventComponent implements OnInit {
   }
 
   async onSave(): Promise<void> {
-    await this.organizationService.createEvent(this.name, this.registrationOpenFrom, this.registrationOpenTo, this.maxAttendants, this.tokensForPresence);
+    await this.organizationService.createEvent(this.name, this.registrationOpenTo, this.maxAttendants, this.tokensForPresence);
   }
 }
