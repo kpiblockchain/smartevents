@@ -24,9 +24,10 @@ export class OrganizationService {
     return currentAccount === owner;
   }
 
-  async createEvent(name: string, from: Moment, to: Moment, maxAttendants: number, tokensForPresence: BigNumber | number) {
+  async createEvent(name: string, to: Moment, maxAttendants: number, tokensForPresence: BigNumber | number) {
+    // TODO name zapisujemy w bazie
     const organization = await this.getOrganization();
     const defaultTxParams = await this.web3.getDefaultTxParams();
-    await organization.createEvent(name, from.unix(), to.unix(), maxAttendants, tokensForPresence, defaultTxParams);
+    await organization.createEvent(to.unix(), maxAttendants, tokensForPresence, defaultTxParams);
   }
 }
