@@ -53,6 +53,11 @@ contract Event {
         }
     }
 
+    function closeEvent() external organizationOwnerOnly {
+        organization.removeThisEventFromStorage();
+        selfdestruct(0x0);
+    }
+
     function attendantsCount() public view
         returns (uint)
     {
@@ -77,5 +82,9 @@ contract Event {
 
         attendantsAddresses.push(attendant);
         attendants[attendant] = AttendantInfo(true, false);
+    }
+
+    function() payable public {
+        revert();
     }
 }

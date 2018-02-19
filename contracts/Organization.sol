@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "zeppelin-solidity/contracts/token/BasicToken.sol";
+import "../node_modules/zeppelin-solidity/contracts/token/BasicToken.sol";
 import "./Event.sol";
 
 contract Organization is BasicToken {
@@ -8,6 +8,7 @@ contract Organization is BasicToken {
 
     address public owner;
     Event[] public events;
+    // mapping (address => bool) public isEvent; // TODO: można użyc mapping jeśli będziemy mieli bazę danych
 
     modifier onlyByOwner() {
         require(owner == msg.sender);
@@ -24,15 +25,23 @@ contract Organization is BasicToken {
     }
 
     function createEvent(uint _registrationOpenTo, uint _maxAttendants, uint _amountForPresence) external onlyByOwner
-    returns (Event)
+        returns (Event)
     {
         var eventAddress = new Event(_registrationOpenTo, _maxAttendants, _amountForPresence);
         events.push(eventAddress);
         return eventAddress;
     }
 
+    function removeThisEventFromStorage() external {
+        for (uint i = events.length - 1; i >= 0; i--) {
+            if (events[i] == msg.sender)
+                delete events[i];
+                break;
+        }
+    }
+
     function getEventsCount() public view
-    returns (uint256)
+        returns (uint256)
     {
         return events.length;
     }
@@ -55,5 +64,9 @@ contract Organization is BasicToken {
         }
 
         return false;
+    }
+
+    function() payable public {
+        revert();
     }
 }

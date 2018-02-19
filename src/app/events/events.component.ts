@@ -50,4 +50,8 @@ export class EventsComponent implements OnInit {
   async signUp(event: Event4ListVM): Promise<void> {
     return await event.signUp();
   }
+
+  async closeEvent(event: Event4ListVM): Promise<void> {
+    return await event.closeEvent();
+  }
 }

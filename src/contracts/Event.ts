@@ -50,6 +50,47 @@ export class Event extends SoltsiceContract {
         Contract methods
     */
     
+    // tslint:disable-next-line:member-ordering
+    public closeEvent = Object.assign(
+        // tslint:disable-next-line:max-line-length
+        // tslint:disable-next-line:variable-name
+        ( txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
+            return new Promise((resolve, reject) => {
+                this._instance.closeEvent( txParams || this._sendParams)
+                    .then((res) => resolve(res))
+                    .catch((err) => reject(err));
+            });
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            sendTransaction: ( txParams?: W3.TC.TxParams): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.closeEvent.sendTransaction( txParams || this._sendParams)
+                        .then((res) => resolve(res))
+                        .catch((err) => reject(err));
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            data: (): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    resolve(this._instance.closeEvent.request().params[0].data);
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            estimateGas: (): Promise<number> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.closeEvent.estimateGas().then((g) => resolve(g));
+                });
+            }
+        });
+    
     // tslint:disable-next-line:max-line-length
     // tslint:disable-next-line:variable-name
     public isSignedUp(attendant: string, txParams?: W3.TC.TxParams): Promise<boolean> {

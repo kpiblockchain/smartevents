@@ -147,6 +147,47 @@ export class Organization extends SoltsiceContract {
     }
     
     // tslint:disable-next-line:member-ordering
+    public removeThisEventFromStorage = Object.assign(
+        // tslint:disable-next-line:max-line-length
+        // tslint:disable-next-line:variable-name
+        ( txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
+            return new Promise((resolve, reject) => {
+                this._instance.removeThisEventFromStorage( txParams || this._sendParams)
+                    .then((res) => resolve(res))
+                    .catch((err) => reject(err));
+            });
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            sendTransaction: ( txParams?: W3.TC.TxParams): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.removeThisEventFromStorage.sendTransaction( txParams || this._sendParams)
+                        .then((res) => resolve(res))
+                        .catch((err) => reject(err));
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            data: (): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    resolve(this._instance.removeThisEventFromStorage.request().params[0].data);
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            estimateGas: (): Promise<number> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.removeThisEventFromStorage.estimateGas().then((g) => resolve(g));
+                });
+            }
+        });
+    
+    // tslint:disable-next-line:member-ordering
     public transfer = Object.assign(
         // tslint:disable-next-line:max-line-length
         // tslint:disable-next-line:variable-name

@@ -45,4 +45,8 @@ export class Event4ListVM {
     if (addresses.length)
       await this.event.confirmPresence(addresses, W3.TC.txParamsDefaultSend(this.me));
   }
+
+  async closeEvent(): Promise<void> {
+    await this.event.closeEvent(W3.TC.txParamsDefaultSend(this.me));
+  }
 }
