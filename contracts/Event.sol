@@ -1,15 +1,14 @@
 pragma solidity ^0.4.18;
 
-import "./Organization.sol";
-
 contract Event {
     uint public registrationOpenTo;
 
-    uint public maxAttendants; // TODO: zrobić counter odliczający do zera i wtedy pozbywamy się też {address[] public attendantsAddresses}
+    uint public maxAttendants; // TODO: zrobić counter odliczający do zera i wtedy pozbywamy się też { address[] public attendantsAddresses }
     uint public tokensForPresence;
-    Organization public organization;
+    address public owner;
+    address public organization;
 
-    address[] public attendantsAddresses; // also acts as isSignedUp when value is >0
+    address[] public attendantsAddresses;
     mapping(address => AttendantInfo) public attendants;
 
     struct AttendantInfo {
@@ -21,11 +20,17 @@ contract Event {
         registrationOpenTo = _registrationOpenTo;
         maxAttendants = _maxAttendants;
         tokensForPresence = _amount;
-        organization = Organization(msg.sender);
+        owner = tx.origin;
+        organization = msg.sender;
     }
 
-    modifier organizationOwnerOnly() {
-        require(msg.sender == organization.owner());
+    modifier ownerOnly() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    modifier organizationOnly() {
+        require(msg.sender == organization);
         _;
     }
 
@@ -38,24 +43,22 @@ contract Event {
         signUp(msg.sender);
     }
 
-    function signUpByOwner(address attendant) external organizationOwnerOnly {
+    function signUpByOwner(address attendant) external ownerOnly {
         signUp(attendant);
     }
 
-    function confirmPresence(address[] attendantsToConfirm) external organizationOwnerOnly {
+    function confirmPresence(address[] attendantsToConfirm) external organizationOnly {
         for (uint i = 0; i < attendantsToConfirm.length; i++) {
             address attendant = attendantsToConfirm[i];
             require(isSignedUp(attendant));
             require(!gotToken(attendant));
 
             attendants[attendant].gotToken = true;
-            organization.giveToken(attendant, tokensForPresence);
         }
     }
 
-    function closeEvent() external organizationOwnerOnly {
-        organization.removeThisEventFromStorage();
-        selfdestruct(0x0);
+    function closeEvent() external ownerOnly {
+        selfdestruct(address(0)); // TODO: powiadomienie organizacji
     }
 
     function attendantsCount() public view

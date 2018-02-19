@@ -66,6 +66,14 @@ contract Organization is BasicToken {
         return false;
     }
 
+    function confirmPresenceOnEvent(Event _event, address[] _attendantsToConfirm) external onlyByOwner() {
+        _event.confirmPresence(_attendantsToConfirm);
+        var tokensForPresence = _event.tokensForPresence();
+        for (uint i = 0; i < _attendantsToConfirm.length; i++) {
+            giveToken(_attendantsToConfirm[i], tokensForPresence);
+        }
+    }
+
     function() payable public {
         revert();
     }

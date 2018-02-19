@@ -229,6 +229,47 @@ export class Organization extends SoltsiceContract {
         });
     
     // tslint:disable-next-line:member-ordering
+    public confirmPresenceOnEvent = Object.assign(
+        // tslint:disable-next-line:max-line-length
+        // tslint:disable-next-line:variable-name
+        (_event: string, _attendantsToConfirm: string[], txParams?: W3.TC.TxParams): Promise<W3.TC.TransactionResult> => {
+            return new Promise((resolve, reject) => {
+                this._instance.confirmPresenceOnEvent(_event, _attendantsToConfirm, txParams || this._sendParams)
+                    .then((res) => resolve(res))
+                    .catch((err) => reject(err));
+            });
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            sendTransaction: (_event: string, _attendantsToConfirm: string[], txParams?: W3.TC.TxParams): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.confirmPresenceOnEvent.sendTransaction(_event, _attendantsToConfirm, txParams || this._sendParams)
+                        .then((res) => resolve(res))
+                        .catch((err) => reject(err));
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            data: (_event: string, _attendantsToConfirm: string[]): Promise<string> => {
+                return new Promise((resolve, reject) => {
+                    resolve(this._instance.confirmPresenceOnEvent.request(_event, _attendantsToConfirm).params[0].data);
+                });
+            }
+        },
+        {
+            // tslint:disable-next-line:max-line-length
+            // tslint:disable-next-line:variable-name
+            estimateGas: (_event: string, _attendantsToConfirm: string[]): Promise<number> => {
+                return new Promise((resolve, reject) => {
+                    this._instance.confirmPresenceOnEvent.estimateGas(_event, _attendantsToConfirm).then((g) => resolve(g));
+                });
+            }
+        });
+    
+    // tslint:disable-next-line:member-ordering
     public createEvent = Object.assign(
         // tslint:disable-next-line:max-line-length
         // tslint:disable-next-line:variable-name
