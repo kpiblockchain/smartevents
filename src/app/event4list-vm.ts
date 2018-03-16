@@ -4,6 +4,7 @@ import { Moment } from 'moment';
 import * as moment from 'moment';
 import {AttendantVm} from './attendant-vm';
 import {BigNumber} from 'bignumber.js';
+import { OrganizationService } from './organization.service';
 
 export class Event4ListVM {
   address: string;
@@ -17,7 +18,7 @@ export class Event4ListVM {
     return moment().isSameOrBefore(this.registrationOpenTo);
   }
 
-  constructor(private event: Event, private me: string) {
+  constructor(private event: Event, private me: string, private org: OrganizationService) {
     this.address = event.address;
     // event.name().then(n => this.name = n); // TODO z bazy
     event.attendantsCount().then(x => this.numOfAttendants = x.toNumber());
@@ -37,13 +38,13 @@ export class Event4ListVM {
     for (let i = new BigNumber(0); i.lt(attendantsCount); i = i.add(1)) {
       const attendantAddress = await this.event.attendantsAddresses(i);
       const attendant = await this.event.attendants(attendantAddress);
-      yield new AttendantVm(attendant[0], attendantAddress, attendant[2]);
+      yield new AttendantVm("user" + i, attendantAddress, attendant[1]);
     }
   }
 
   async confirm(addresses: string[]) {
     if (addresses.length)
-      await this.event.confirmPresence(addresses, W3.TC.txParamsDefaultSend(this.me));
+      await this.org.getOrganization().then(x => x.confirmPresenceOnEvent(this.address, addresses, W3.TC.txParamsDefaultSend(this.me)));
   }
 
   async closeEvent(): Promise<void> {

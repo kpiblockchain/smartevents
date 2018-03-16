@@ -31,6 +31,12 @@ export class Event extends SoltsiceContract {
         return contract;
     }
 
+    static async Deployed(w3?: W3): Promise<Event> {
+        let contract = new Event('', undefined, w3, undefined);
+        await contract._instancePromise;
+        return contract;
+    }
+
     protected constructor(
         deploymentParams: string | W3.TC.TxParams | object,
         ctorParams?: {_registrationOpenTo: BigNumber | number, _maxAttendants: BigNumber | number, _amount: BigNumber | number},

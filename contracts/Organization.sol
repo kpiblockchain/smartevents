@@ -1,6 +1,6 @@
 pragma solidity ^0.4.18;
 
-import "../node_modules/zeppelin-solidity/contracts/token/BasicToken.sol";
+import "../node_modules/zeppelin-solidity/contracts/token/ERC20/BasicToken.sol";
 import "./Event.sol";
 
 contract Organization is BasicToken {
@@ -24,7 +24,7 @@ contract Organization is BasicToken {
         owner = msg.sender;
     }
 
-    function createEvent(uint _registrationOpenTo, uint _maxAttendants, uint _amountForPresence) external onlyByOwner
+    function createEvent(uint _registrationOpenTo, uint _maxAttendants, uint _amountForPresence) external onlyByOwner()
         returns (Event)
     {
         var eventAddress = new Event(_registrationOpenTo, _maxAttendants, _amountForPresence);
@@ -46,11 +46,11 @@ contract Organization is BasicToken {
         return events.length;
     }
 
-    function giveToken(address _to, uint256 _amount) public onlyByOwnerOrEvent {
+    function giveToken(address _to, uint256 _amount) public onlyByOwnerOrEvent() {
         require(_to != address(0));
         require(_amount > 0);
 
-        totalSupply = totalSupply.add(_amount);
+        totalSupply_ = totalSupply_.add(_amount);
         balances[_to] = balances[_to].add(_amount);
         Transfer(address(0), _to, _amount);
     }

@@ -1,6 +1,6 @@
 <mat-card *ngFor="let event of events">
   <mat-card-header>
-    <mat-card-title>{{event.name}}</mat-card-title>
+    <mat-card-title>{{event.name}} ({{event.address}})</mat-card-title>
     <mat-card-subtitle>{{event.registrationOpenFrom | date : short}} - {{event.registrationOpenTo | date : short}} ({{event.numOfAttendants}})</mat-card-subtitle>
   </mat-card-header>
   <mat-card-content>

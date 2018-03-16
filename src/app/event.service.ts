@@ -24,8 +24,14 @@ export class EventService {
 
     for (let i = new BigNumber(0); i.lt(eventsCount); i = i.add(1)) {
       const eventAddress = await organization.events(i);
-      const event = await Event.At(eventAddress, this.web3);
-      yield new Event4ListVM(event, defaultAddress);
+      try {
+        const event = await Event.At(eventAddress, this.web3);
+        yield new Event4ListVM(event, defaultAddress, this.organizationService);
+      }
+      catch (error) {
+        console.warn(error);
+        continue;
+      }
     }
   }
 }
