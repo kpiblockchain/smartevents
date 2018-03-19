@@ -5,3 +5,11 @@
 .spacer {
   flex: 1 1 auto;
 }
+
+.tinytext {
+  font-size: 10px;
+}
+
+.tinyspacer {
+  padding: 0 8px;
+}

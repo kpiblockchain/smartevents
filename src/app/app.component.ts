@@ -14,6 +14,7 @@ export class AppComponent {
 
   constructor(private organizationService: OrganizationService) {
     // this.organizationService.getOrganization().then(x => x.name()).then(x => this.title = x); // TODO pobierać z bazy
+    this.title = 'Organization'; // TODO pobierać z bazy
     this.organizationService.getOrganization().then(x => this.address = x.address);
     this.organizationService.currentAccountIsOrganizationOwner().then(x => this.currentAccountIsOrganizationOwner = x);
   }
