@@ -19,6 +19,6 @@ export class CreateEventComponent implements OnInit {
   }
 
   async onSave(): Promise<void> {
-    await this.organizationService.createEvent(this.name, this.registrationOpenTo, this.maxAttendants, this.tokensForPresence);
+    await this.organizationService.createEvent(this.name, this.registrationOpenTo.add(1, "day").subtract(1, "millisecond"), this.maxAttendants, this.tokensForPresence);
   }
 }

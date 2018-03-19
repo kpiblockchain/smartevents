@@ -10,6 +10,7 @@ export class Event4ListVM {
   address: string;
   name: string;
   numOfAttendants: number;
+  maxAttendants: number;
   registrationOpenTo: Moment;
   alreadySignedUp: boolean;
   gotToken: boolean;
@@ -22,6 +23,7 @@ export class Event4ListVM {
     this.address = event.address;
     // event.name().then(n => this.name = n); // TODO z bazy
     event.attendantsCount().then(x => this.numOfAttendants = x.toNumber());
+    event.maxAttendants().then(x => this.maxAttendants = x.toNumber());
     event.registrationOpenTo().then(x => this.registrationOpenTo = moment.unix(x.toNumber()));
     event.tokensForPresence().then(x => this.tokensForPresence = x.toNumber());
     event.isSignedUp(this.me).then(x => this.alreadySignedUp = x);
