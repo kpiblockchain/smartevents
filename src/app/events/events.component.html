@@ -10,7 +10,6 @@
     <button mat-button (click)="signUp(event)" *ngIf="event.registrationIsOpen && !event.alreadySignedUp && !event.gotToken">Sign Up</button>
     <button mat-button [disabled]="true" *ngIf="event.alreadySignedUp && !event.gotToken">Already Signed Up</button>
     <button mat-button [disabled]="true" *ngIf="event.alreadySignedUp && event.gotToken">{{event.tokensForPresence}} tokens received</button>
-    <button mat-button [disabled]="true" *ngIf="event.alreadySignedUp && event.gotToken">{{event.tokensForPresence}} tokens received</button>
     <button mat-button [disabled]="true" *ngIf="!event.registrationIsOpen && !event.gotToken && !event.alreadySignedUp">Registraion is closed</button>
     <button mat-button (click)="showConfirmDialog(event)" *ngIf="currentAccountIsOrganizationOwner">Confirm Attendant Presence</button>
     <button mat-button (click)="closeEvent(event)" *ngIf="currentAccountIsOrganizationOwner">Close Event (pernamently)</button>

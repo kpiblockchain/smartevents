@@ -24,13 +24,16 @@ export class EventService {
 
     for (let i = new BigNumber(0); i.lt(eventsCount); i = i.add(1)) {
       const eventAddress = await organization.events(i);
+      let event = null;
       try {
-        const event = await Event.At(eventAddress, this.web3);
-        yield new Event4ListVM(event, defaultAddress, this.organizationService);
+        event = await Event.At(eventAddress, this.web3);
       }
       catch (error) {
-        console.warn(error);
         continue;
+      }
+
+      if (!(await event.registrationOpenTo()).isZero()) { // czy istnieje
+        yield new Event4ListVM(event, defaultAddress, this.organizationService);
       }
     }
   }
